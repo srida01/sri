@@ -7,7 +7,11 @@ load_dotenv()
 
 POSTGRES_URL = os.environ["database_url"]
 
-engine = create_engine(POSTGRES_URL, echo=True)
+engine = create_engine(POSTGRES_URL, echo=True,pool_size=5,                    
+    max_overflow=0,                
+    pool_recycle=300,              
+    pool_pre_ping=True,            
+    connect_args={"sslmode": "require"})
 
 def get_session():
     with Session(engine) as session:
