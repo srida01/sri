@@ -8,7 +8,8 @@ load_dotenv()
 POSTGRES_URL = os.environ["database_url"]
 
 engine = create_engine(POSTGRES_URL, echo=True,pool_size=5,                    
-   connect_args={"options": "-c default_transaction_isolation=read_committed"}
+   connect_args={"options": "-c default_transaction_isolation=read_committed"},
+                       "sslmode": "require"
 )
 
 def get_session():
