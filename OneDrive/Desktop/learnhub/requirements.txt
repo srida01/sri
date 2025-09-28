@@ -1,0 +1,9 @@
+fastapi
+sqlmodel
+uvicorn
+dotenv
+ psycopg2-binary
+agno
+openai
+google-generativeai
+google-genai
