@@ -5,7 +5,7 @@ from dotenv import load_dotenv
 
 load_dotenv() 
 
-POSTGRES_URL = os.environ["database_url"]
+POSTGRES_URL = "postgresql://postgres:srida9840411@db.xchixbtfpksowiyexmfz.supabase.co:5432/postgres"
 
 engine = create_engine(POSTGRES_URL, echo=True,pool_size=5)
 
