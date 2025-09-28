@@ -6,4 +6,4 @@ dotenv
 agno
 openai
 google-generativeai
-
+google-genai
