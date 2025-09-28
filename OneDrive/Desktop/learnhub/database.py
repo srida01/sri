@@ -9,7 +9,7 @@ POSTGRES_URL = os.environ["database_url"]
 
 engine = create_engine(POSTGRES_URL, echo=True,pool_size=5,                    
    connect_args={"options": "-c default_transaction_isolation=read_committed"}
-))
+)
 
 def get_session():
     with Session(engine) as session:
