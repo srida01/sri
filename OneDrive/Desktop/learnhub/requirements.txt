@@ -3,3 +3,4 @@ sqlmodel
 uvicorn
 dotenv
  psycopg2-binary
+agno
