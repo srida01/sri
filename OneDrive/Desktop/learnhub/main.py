@@ -149,11 +149,11 @@ def create_skill(category_id: int, skill: SkillCreate, session: Session = Depend
     session.refresh(db_skill)
     return db_skill
 
-@app.get("/category/{category_id}/skills/{skill_id}")
-async def get_skill(category_id: int, skill_id: int, session: Session = Depends(get_session)):
+@app.get("/category/{category_id}/skills/{skill_name}")
+async def get_skill(category_id: int, skill_name: str, session: Session = Depends(get_session)):
     skill = session.exec(
         select(Skill).where(
-            Skill.skill_id == skill_id,
+            Skill.skill_name == skill_name,
             Skill.category_id == category_id
         )
     ).first()
@@ -312,6 +312,52 @@ async def get_skill_teachers(
                 "years_experience": teach_data.years_experience
             }
             for user, teach_data in teachers_data
+        ]
+    }
+@app.get("/category/{category_id}/skills/{skill_id}/all-users")
+async def get_all_skill_users(
+    category_id: int,
+    skill_id: int,
+    session: Session = Depends(get_session)
+):
+    skill = session.exec(
+        select(Skill).where(
+            Skill.skill_id == skill_id,
+            Skill.category_id == category_id
+        )
+    ).first()
+
+    if not skill:
+        raise HTTPException(status_code=404, detail="Skill not found")
+
+    # Get all users learning the skill
+    learners_data = session.exec(
+        select(User)
+        .join(UserLearnSkill, User.user_id == UserLearnSkill.user_id)
+        .where(UserLearnSkill.skill_id == skill_id)
+    ).all()
+
+    # Get all users teaching the skill
+    teachers_data = session.exec(
+        select(User)
+        .join(UserTeachSkill, User.user_id == UserTeachSkill.user_id)
+        .where(UserTeachSkill.skill_id == skill_id)
+    ).all()
+
+    # Combine learners and teachers, removing duplicates
+    all_users = {user.user_id: user for user in learners_data + teachers_data}.values()
+
+    return {
+        "skill": skill,
+        "users_count": len(all_users),
+        "users": [
+            {
+                "user_id": user.user_id,
+                "username": user.username,
+                "email": user.email,
+                "aboutme": user.aboutme
+            }
+            for user in all_users
         ]
     }
 
